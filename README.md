@@ -107,7 +107,7 @@ Ce projet est sous licence **ISC**. Consultez le fichier `LICENSE` pour plus de 
 
 ---
 
-**Auteur** : Ajoutez votre nom ici
+**Auteur** : Jan, Wafo, Diouf
 
 ## Dépannage
 
