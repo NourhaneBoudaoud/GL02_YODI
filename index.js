@@ -52,7 +52,7 @@ async function mainMenu() {
             await parser.parse("./data/Questions_GIFT","./data/questions.json");
             break;
 
-        case "Spec09":
+        case "Comparer un profil moyen":
             await examManager.comparaisonProfileMoyen("./data");
             break;
 
