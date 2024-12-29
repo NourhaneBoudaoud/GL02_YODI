@@ -25,6 +25,7 @@ async function mainMenu() {
                 "Comparer un profil moyen",
                 "Quitter",
             ],
+            pageSize: 9, // Afficher toutes les options d'un coup
         },
     ]);
 
