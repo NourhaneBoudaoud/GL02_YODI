@@ -103,11 +103,11 @@ Aucun test automatisé n'est encore implémenté. Pour tester manuellement :
 
 ## Licence
 
-Ce projet est sous licence **ISC**. Consultez le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence **ISC**. Vous pouvez consulter les détails de la licence à l'adresse suivante : [ISC License](https://opensource.org/licenses/ISC).
 
 ---
 
-**Auteur** : Jan, Wafo, Diouf
+**Auteur** : JAN Yohan, WAFO KAMGUE Jerry, DIOUF Ndeye Bineta
 
 ## Dépannage
 
@@ -121,4 +121,3 @@ Si vous rencontrez des problèmes :
 - Ajouter des tests automatisés.
 - Améliorer la gestion des erreurs lors du traitement des fichiers.
 - Renforcer l'interface utilisateur pour une meilleure interactivité.
-```
