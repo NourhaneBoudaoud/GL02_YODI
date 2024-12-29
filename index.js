@@ -22,7 +22,7 @@ async function mainMenu() {
                 "Simuler un examen",
                 "Definir un profil d' examen",
                 "Parser la base de données",
-                "Spec09",
+                "Comparer un profil moyen",
                 "Quitter",
             ],
         },
