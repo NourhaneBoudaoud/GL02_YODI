@@ -6,9 +6,12 @@ const parser = require("./processGiftFiles");
 
 const questionsPath = path.join(__dirname, "../data/questions.json");
 
+// Fonction pour rechercher des questions dans un fichier JSON en fonction d'un mot-clé.
+
 async function researchQuestions() {
     console.log("Recherche de questions...");
     try {
+        // Conversion et lecture des données JSON à partir d'un fichier GIFT.
 
         //parser to json
         questions = await parser.parse("./data/Questions_GIFT", "./data/questions.json");
@@ -36,6 +39,11 @@ async function researchQuestions() {
             return null;
         }
 }
+/**
+ *  Affiche une liste des questions avec leurs titres et types.**
+ * @param {Array} questions - Liste des questions à afficher.
+ */
+
 function displayListQuestions(questions) {
     console.log("Liste des questions trouvées :");
     questions.forEach((question, index) => {
@@ -43,6 +51,10 @@ function displayListQuestions(questions) {
         console.log(`--> ${question.question.substring(0, 90)} `);
     });
 }
+/**
+ * Fonction pour sélectionner une question à partir d'une liste.**
+ * @returns {Object|null} - La question sélectionnée ou null si aucune sélection.
+ */
 async function selectQuestion() {
     console.log("Affichage d'une question sélectionnée...");
     let questions = [];
@@ -78,6 +90,10 @@ async function selectQuestion() {
         return null;
     }
 }
+/**
+ * Affiche les détails d'une question spécifique en fonction de son type.**
+ * @param {Object} question - La question à afficher.
+ */
 
 function viewQuestion(question) {
     if (!question) {
@@ -154,6 +170,10 @@ function viewQuestion(question) {
             console.log("Type de question inconnu.");
     }
 }
+
+/**
+ * Affiche les détails d'une question après sélection.**
+ */
 
 async function viewQuestionDetails() {
     const selectedQuestion = await selectQuestion();
