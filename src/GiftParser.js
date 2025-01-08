@@ -37,37 +37,37 @@ this.parseLine = function (title, question) {
 
     let additionalData = {};
 
-    // Processus spécifique pour extraire les réponses selon le type
+    // Déterminer les actions spécifiques pour chaque type de question détecté.**
     switch (type) {
         case "multiple_choice":
-            additionalData = { options: this.extractOptions(cleanedQuestion) };
+            additionalData = { options: this.extractOptions(cleanedQuestion) }; // Extraire les options pour les questions à choix multiples.
             break;
         case "true_false":
-            additionalData = { answer: this.extractTrueFalse(cleanedQuestion) };
+            additionalData = { answer: this.extractTrueFalse(cleanedQuestion) }; // Extraire la réponse pour une question vrai/faux.
             break;
         case "open":
             // Pas de quatrième partie pour "open"
-            break;
+            break; //  Aucun traitement spécifique nécessaire pour une question ouverte.
         case "numerical":
-            additionalData = this.extractNumerical(cleanedQuestion);
+            additionalData = this.extractNumerical(cleanedQuestion); // Extraire les réponses et tolérances numériques.
             break;
         case "matching":
-            additionalData = { pairs: this.extractMatching(cleanedQuestion) };
+            additionalData = { pairs: this.extractMatching(cleanedQuestion) }; // Extraire les paires pour les questions d'appariement.
             break;
         case "cloze":
-            additionalData = { answers: this.extractCloze(cleanedQuestion) };
+            additionalData = { answers: this.extractCloze(cleanedQuestion) }; // Extraire les réponses imbriquées pour les questions de type "cloze".
             break;
         case "short_answer":
-            additionalData = { correct_answers: this.extractShortAnswer(cleanedQuestion) };
+            additionalData = { correct_answers: this.extractShortAnswer(cleanedQuestion) }; // Extraire les réponses correctes pour les questions courtes.
             break;    
         case "multiple_choice_feedback":
-            additionalData = { options: this.extractMultipleChoiceFeedback(cleanedQuestion) };
+            additionalData = { options: this.extractMultipleChoiceFeedback(cleanedQuestion) }; // Extraire les choix et leurs feedbacks.
             break;
         case "Ennonce_pure":
         //    console.warn("Ennoncé pure reconnu:", title); //N'activer la ligne que pour tester si elles sont reconnues.
-            break;
+            break; // Aucun traitement nécessaire pour un énoncé pur.
         default:
-            console.warn("Type de question non pris en charge:", title);
+            console.warn("Type de question non pris en charge:", title); // Gérer les cas de types non pris en charge.
     }
 
     return {
@@ -85,6 +85,7 @@ this.parseLine = function (title, question) {
     this.identifyType = function (question,title) {
         question = question.trim();
         const titleInfo = this.detectIndexedTitle(title);
+        // Vérifie les éléments distinctifs dans le texte pour identifier le type.
         if (question.includes("~") && question.includes("=") && question.includes("#")) {
             return "multiple_choice_feedback";
         } else if (question.includes("~") && question.includes("=") && !question.includes("SA")) {
@@ -107,16 +108,17 @@ this.parseLine = function (title, question) {
             }
         }else if (titleInfo && titleInfo.suffix.endsWith("0")) {
         // Si c'est un x.0, il est normal que le type dee soit pas reconnu
-            return "Ennonce_pure";
+            return "Ennonce_pure"; // Traite les énoncés "x.0" comme purement descriptifs.
         }
 
-        return "type non reconnu";
+        return "type non reconnu"; // Si aucun type spécifique n'est trouvé, retour à une valeur par défaut.
     };
 
 /** Extrait les options pour une question de type "multiple_choice" ou "multiple_choice_feedback".
  * @param {string} question - La question à traiter.
  * @returns {Array} Liste des options formatées.
  */
+
 this.extractOptions = function (question) {
     let options = [];
     
