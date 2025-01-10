@@ -109,72 +109,85 @@ async function generateGiftFile(examSet) {
         return;
     }
 
-    // Chemin du fichier GIFT
-    const dirPath = path.join(process.cwd(), 'data');
-    const giftFilePath = path.join(
-        dirPath,
-        "exam - " + new Date().toISOString().replace(/[:.]/g, "-") + ".gift"
-    );
+    // Demander à l'utilisateur de fournir un nom pour le fichier
+    const readline = require("readline");
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
-    // Transformation des questions en format GIFT
-    const giftContent = Array.from(examSet)
-        .map((question, index) => {
-            switch (question.type) {
-                case "multiple_choice":
-                    const multipleChoiceOptions = question.options
-                        .map((option) => (option.is_correct ? `=${option.text}` : `~${option.text}`))
-                        .join(" ");
-                    return `::${question.title}:: ${question.question} { ${multipleChoiceOptions} }`;
+    rl.question("Entrez un nom pour le fichier (laisser vide pour utiliser un nom par défaut) : ", async (userInput) => {
+        rl.close();
 
-                case "true_false":
-                    return `::${question.title}:: ${question.question} { ${question.answer ? "T" : "F"} }`;
+        // Nom du fichier par défaut si l'utilisateur n'entre rien
+        const fileName = userInput.trim() || `exam - ${new Date().toISOString().replace(/[:.]/g, "-")}.gift`;
 
-                case "short_answer":
-                    const shortAnswers = question.correct_answers.map((ans) => `=${ans}`).join(" ");
-                    return `::${question.title}:: ${question.question} { ${shortAnswers} }`;
+        // Chemin complet du fichier
+        const dirPath = path.join(process.cwd(), 'data');
+        const giftFilePath = path.join(dirPath, fileName);
 
-                case "matching":
-                    const matchingPairs = question.pairs
-                        .map((pair) => `=${pair.term} -> ${pair.match}`)
-                        .join(" ");
-                    return `::${question.title}:: ${question.question} { ${matchingPairs} }`;
+        // Transformation des questions en format GIFT
+        const giftContent = Array.from(examSet)
+            .map((question, index) => {
+                switch (question.type) {
+                    case "multiple_choice":
+                        const multipleChoiceOptions = question.options
+                            .map((option) => (option.is_correct ? `=${option.text}` : `~${option.text}`))
+                            .join(" ");
+                        return `::${question.title}:: ${question.question} { ${multipleChoiceOptions} }`;
 
-                case "cloze":
-                    const clozeQuestion = question.answers.reduce((formatted, answer, index) => {
-                        return formatted.replace(`(${index + 1})`, `{=${answer}}`);
-                    }, question.question);
-                    
+                    case "true_false":
+                        return `::${question.title}:: ${question.question} { ${question.answer ? "T" : "F"} }`;
+
+                    case "short_answer":
+                        const shortAnswers = question.correct_answers.map((ans) => `=${ans}`).join(" ");
+                        return `::${question.title}:: ${question.question} { ${shortAnswers} }`;
+
+                    case "matching":
+                        const matchingPairs = question.pairs
+                            .map((pair) => `=${pair.term} -> ${pair.match}`)
+                            .join(" ");
+                        return `::${question.title}:: ${question.question} { ${matchingPairs} }`;
+
+                    case "cloze":
+                        const clozeQuestion = question.answers.reduce((formatted, answer, index) => {
+                            return formatted.replace(`(${index + 1})`, `{=${answer}}`);
+                        }, question.question);
                         return `::${question.title}:: ${clozeQuestion}`;
 
-                case "numerical":
-                    return `::${question.title}:: ${question.question} {#${question.correct_answer}:${question.tolerance}}`;
+                    case "numerical":
+                        return `::${question.title}:: ${question.question} {#${question.correct_answer}:${question.tolerance}}`;
 
-                case "multiple_choice_feedback":
-                    const feedbackOptions = question.options.map((option) => {
-                        const prefix = option.is_correct ? "=" : "~";
-                        return `${prefix}${option.text}#${option.feedback}`;
-                    }).join(" ");
-                    return `::${question.title}:: ${question.question} { ${feedbackOptions} }`;
-                case "open":
-                    return `::${question.title}:: ${question.question} {}`;
-                default:
-                    console.log(chalk.yellow(`Type de question non pris en charge : ${question.type}`));
-                    return null;
-            }
-        })
-        .filter((content) => content !== null) // Filtrer les types inconnus
-        .join("\n\n");
+                    case "multiple_choice_feedback":
+                        const feedbackOptions = question.options.map((option) => {
+                            const prefix = option.is_correct ? "=" : "~";
+                            return `${prefix}${option.text}#${option.feedback}`;
+                        }).join(" ");
+                        return `::${question.title}:: ${question.question} { ${feedbackOptions} }`;
 
-    try {
-        await fs.ensureDir(dirPath);
+                    case "open":
+                        return `::${question.title}:: ${question.question} {}`;
+                        
+                    default:
+                        console.log(chalk.yellow(`Type de question non pris en charge : ${question.type}`));
+                        return null;
+                }
+            })
+            .filter((content) => content !== null) // Filtrer les types inconnus
+            .join("\n\n");
 
-        // Écriture du fichier GIFT
-        await fs.writeFile(giftFilePath, giftContent, "utf8");
-        console.log(chalk.green(`Fichier GIFT généré avec succès : ${giftFilePath}`));
-    } catch (error) {
-        console.error(chalk.red("Erreur lors de la génération du fichier GIFT :"), error);
-    }
+        try {
+            await fs.ensureDir(dirPath);
+
+            // Écriture du fichier GIFT
+            await fs.writeFile(giftFilePath, giftContent, "utf8");
+            console.log(chalk.green(`Fichier GIFT généré avec succès : ${giftFilePath}`));
+        } catch (error) {
+            console.error(chalk.red("Erreur lors de la génération du fichier GIFT :"), error);
+        }
+    });
 }
+
 
 // Fonction pour afficher les examens disponibles
 function listExams() {
